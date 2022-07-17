@@ -5,19 +5,9 @@ import numpy as np
 from pprint import pprint
 
 # Import the dataset and define the feature as well as the target datasets / columns#
-'''dataset = pd.read_csv('zoo.csv',
-                      names=['animal_name', 'hair', 'feathers', 'eggs', 'milk',
-                             'airbone', 'aquatic', 'predator', 'toothed', 'backbone',
-                             'breathes', 'venomous', 'fins', 'legs', 'tail', 'domestic', 'catsize',
-                             'class', ])  # Import all columns omitting the fist which consists the names of the animals
-# We drop the animal names since this is not a good feature to split the data on
-
-# dataset = dataset.drop('animal_name', axis=1)
-'''
 # dataset = pd.read_csv('accelerometer.csv', sep=',', names=['wconfid','pctid','x','y','z', ])
-dataset = pd.read_csv('accelerometer.csv', sep=',', random = 0)
+dataset = pd.read_csv('accelerometer.csv', sep=',')
 df = dataset.iloc[1:, :]
-
 
 # print(df)
 # dataset = dataset.to_csv(header=None,index=False)
@@ -142,8 +132,8 @@ def train_test_split(dataset_tmp):
 training_data = train_test_split(df)[0]
 testing_data = train_test_split(df)[1]
 
-# print(training_data.columns[1:])
-# print(testing_data.shape)
+print(training_data)
+print(testing_data)
 
 
 def test(data, tree_elm):
@@ -162,7 +152,7 @@ def test(data, tree_elm):
 
 #print(training_data.columns[1:])
 print("ID3 starts")
-tree = ID3(training_data, training_data, training_data.columns[1:])
+#tree = ID3(training_data, training_data, training_data.columns[1:])
 print("Tree Print")
-pprint(tree)
-test(testing_data, tree)
+#pprint(tree)
+#test(testing_data, tree)
