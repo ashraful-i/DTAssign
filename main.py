@@ -7,8 +7,12 @@ from pprint import pprint
 # Import the dataset and define the feature as well as the target datasets / columns#
 # dataset = pd.read_csv('accelerometer.csv', sep=',', names=['wconfid','pctid','x','y','z', ])
 dataset = pd.read_csv('accelerometer.csv', sep=',')
-df = dataset.iloc[1:, :]
+df = pd.DataFrame(dataset)
 
+df_train = df.sample(frac=.8).reset_index(drop = True)
+df_test = df.drop(df_train.index).reset_index(drop=True)
+#print(df_train)
+#print(df_test)
 # print(df)
 # dataset = dataset.to_csv(header=None,index=False)
 
@@ -19,7 +23,7 @@ def entropy_calc(target_col):
     return entropy
 
 
-def InfoGain(data, split_attribute_name, target_name="wconfid"):
+def InfoGain(data, split_attribute_name, target_name="z"):
     # Calculate the entropy of the total dataset
     total_entropy = entropy_calc(data[target_name])
 
@@ -39,7 +43,7 @@ def InfoGain(data, split_attribute_name, target_name="wconfid"):
     return Information_Gain
 
 
-def ID3(data, originaldata, features, target_attribute_name="wconfid", parent_node_class=None):
+def ID3(data, originaldata, features, target_attribute_name="z", parent_node_class=None):
     # print("ID3")
     # Define the stopping criteria --> If one of this is satisfied, we want to return a leaf node#
 
@@ -129,18 +133,18 @@ def train_test_split(dataset_tmp):
 
 
 # print(dataset)
-training_data = train_test_split(df)[0]
-testing_data = train_test_split(df)[1]
+# training_data = train_test_split(df)[0]
+# testing_data = train_test_split(df)[1]
 
-print(training_data)
-print(testing_data)
+# print(training_data)
+# print(testing_data)
 
 
 def test(data, tree_elm):
     print("test")
     # Create new query instances by simply removing the target feature column from the original dataset and
     # convert it to a dictionary
-    queries = data.iloc[:, 1:].to_dict(orient="records")
+    queries = data.iloc[:, :-1].to_dict(orient="records")
 
     # Create a empty DataFrame in whose columns the prediction of the tree are stored
     predicted = pd.DataFrame(columns=["predicted"])
@@ -148,11 +152,12 @@ def test(data, tree_elm):
     # Calculate the prediction accuracy
     for i in range(len(data)):
         predicted.loc[i, "predicted"] = predict(queries[i], tree_elm, 1.0)
-    print('The prediction accuracy is: ', (np.sum(predicted["predicted"] == data["wconfid"]) / len(data)) * 100, '%')
+    print('The prediction accuracy is: ', (np.sum(predicted["predicted"] == data["z"]) / len(data)) * 100, '%')
 
 #print(training_data.columns[1:])
 print("ID3 starts")
-#tree = ID3(training_data, training_data, training_data.columns[1:])
+print(df_train.columns[:-1])
+tree = ID3(df_train, df, df_train.columns[:-1])
 print("Tree Print")
 #pprint(tree)
-#test(testing_data, tree)
+test(df_test, tree)
